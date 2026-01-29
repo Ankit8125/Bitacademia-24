@@ -1,4 +1,4 @@
-import "./env.js"
+import "./env.js";
 import connectDB from "./db/index.js";
 import { app } from "./app.js";
 import { createServer } from "http";
@@ -8,6 +8,13 @@ import "./cron-jobs/notifyProf.js";
 import "./cron-jobs/autoMovePreferences.js";
 import "./cron-jobs/notifyProfMinor.js";
 import "./cron-jobs/autoMovePreferencesMinor.js";
+import "./cron-jobs/notifyMajorProf.js";
+import "./cron-jobs/autoMovePreferencesMajor.js";
+import fs from 'fs'
+
+//Creating mission public dir
+fs.mkdirSync(import.meta.dirname + '/../public/temp/', { recursive: true });
+fs.mkdirSync(import.meta.dirname + '/../public/uploads/', { recursive: true });
 
 // Global error handlers
 process.on("uncaughtException", (error) => {
@@ -30,7 +37,7 @@ connectDB()
       console.error("❌ Error in Express app:", err);
       // Don't throw, just log - let global handlers deal with it
     });
-    
+
     const httpServer = createServer(app);
     const io = new Server(httpServer, {
       cors: {
@@ -43,7 +50,7 @@ connectDB()
 
     io.on("connection", (socket) => {
       console.log("New socket connected:", socket.id);
-      
+
       // Handle socket errors
       socket.on("error", (error) => {
         console.error("Socket error:", error);
